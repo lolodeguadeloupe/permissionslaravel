@@ -3,10 +3,11 @@ import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 
 export default function Authenticated({ user, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+    const page = usePage();
 
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -25,6 +26,26 @@ export default function Authenticated({ user, header, children }) {
                                     Dashboard
                                 </NavLink>
                             </div>
+                            {page.props.can.student_access && <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink href={route('posts.index')} active={route().current('posts.index')}>
+                                    Liste des posts
+                                </NavLink>
+                            </div>}
+                            {page.props.can.student_access && <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink href={route('posts2.index')} active={route().current('posts2.index')}>
+                                    Liste des posts2
+                                </NavLink>
+                            </div>}
+                            {page.props.can.student_access && <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink href={route('students.index')} active={route().current('students.index')}>
+                                    Liste des étudiants
+                                </NavLink>
+                            </div>}
+                            {page.props.can.role_access &&<div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink href={route('roles.index')} active={route().current('roles.index')}>
+                                    Liste des roles
+                                </NavLink>
+                            </div>}
                         </div>
 
                         <div className="hidden sm:flex sm:items-center sm:ms-6">

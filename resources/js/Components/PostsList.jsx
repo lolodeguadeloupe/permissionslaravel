@@ -20,9 +20,11 @@ const PostsList = ({ initialPosts }) => {
     const loadMorePosts = async () => {
         setLoading(true);
         const nextPage = page + 1;
+        console.log(nextPage);
         try {
             const response = await axios.get(`/posts/load-more?page=${nextPage}`);
             const newPosts = response.data.data;
+            console.log(newPosts);
             setPosts([...posts, ...newPosts]);
             setPage(nextPage);
             setHasMore(response.data.next_page_url !== null);

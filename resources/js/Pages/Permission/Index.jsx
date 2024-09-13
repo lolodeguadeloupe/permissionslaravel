@@ -4,8 +4,7 @@ import { Head, Link, router, usePage,useForm } from "@inertiajs/react";
 import Pagination from "@/Components/Pagination";
 import { useEffect, useMemo, useState,useRef } from "react";
 
-export default function Index({ auth, roles}) {
-    console.log(roles);
+export default function Index({ auth, permissions}) {
     const page = usePage();
 
     const [searchTerm, setSearchTerm] = useState( "");
@@ -16,14 +15,13 @@ export default function Index({ auth, roles}) {
     const isInitialRender = useRef(true);
 
     let studentsUrl = useMemo(() => {
-        const url = new URL(route("roles.index"));
+        const url = new URL(route("permissions.index"));
 
         url.searchParams.append("page", pageNumber);
         
         if(searchTerm){
             url.searchParams.append("search", searchTerm);
         }
-        url.searchParams.append("search", searchTerm);
 
         return url.toString();
     }, [searchTerm,pageNumber]);
@@ -44,6 +42,8 @@ export default function Index({ auth, roles}) {
    useEffect(() => {
     
         if (inputValue.length == 0) {
+            setSearchTerm("");
+            setPageNumber("1");
             return;
         }
 
@@ -62,7 +62,7 @@ export default function Index({ auth, roles}) {
 
     function deleteRole(id) {
         if (confirm("Are you sure you want to delete this role?")) {
-            router.delete(route("roles.destroy", id), {
+            router.delete(route("permissions.destroy", id), {
                 preserveScroll: true,
             });
         }
@@ -77,7 +77,7 @@ export default function Index({ auth, roles}) {
                 </h2>
             }
         >
-            <Head title="Roles List" />
+            <Head title="Permissions List" />
 
             <div className="bg-gray-100 py-10">
                 <div className="mx-auto max-w-7xl">
@@ -85,27 +85,19 @@ export default function Index({ auth, roles}) {
                         <div className="sm:flex sm:items-center">
                             <div className="sm:flex-auto">
                                 <h1 className="text-xl font-semibold text-gray-900">
-                                    Roles
+                                    permissions
                                 </h1>
                                 <p className="mt-2 text-sm text-gray-700">
-                                    A list of all the Roles.
+                                    A list of all the permissions.
                                 </p>
                             </div>
 
                             <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
                                     <Link
-                                        href={route("roles.create")}
+                                        href={route("permissions.create")}
                                         className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
                                     >
-                                        Add Role
-                                    </Link>
-                            </div>
-                            <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-                                    <Link
-                                        href={route("permissions.index")}
-                                        className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
-                                    >
-                                        List Permissions
+                                        Add Permission
                                     </Link>
                             </div>
                         </div>
@@ -120,7 +112,7 @@ export default function Index({ auth, roles}) {
                                     onChange={(e) => setInputValue(e.target.value)}
                                     type="text"
                                     autoComplete="off"
-                                    placeholder="Search roles data..."
+                                    placeholder="Search permissions data..."
                                     id="search"
                                     className="block rounded-lg border-0 py-2 pl-10 text-gray-900 ring-1 ring-inset ring-gray-200 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 />
@@ -154,7 +146,7 @@ export default function Index({ auth, roles}) {
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-gray-200 bg-white">
-                                                {roles.data.map(
+                                                {permissions.data.map(
                                                     (role) => {
                                                         return (
                                                             <tr
@@ -173,7 +165,7 @@ export default function Index({ auth, roles}) {
                                                                 <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                                                                         <Link
                                                                             href={route(
-                                                                                "roles.edit",
+                                                                                "permissions.edit",
                                                                                 role.id
                                                                             )}
                                                                             className="text-indigo-600 hover:text-indigo-900"
@@ -197,7 +189,7 @@ export default function Index({ auth, roles}) {
                                     </div>
                                 </div>
                             </div>
-                            <div className="mt-7 flex-1"><Pagination meta={roles.meta} updatedPageNumber={updatedPageNumber} /></div>
+                            <div className="mt-7 flex-1"><Pagination meta={permissions.meta} updatedPageNumber={updatedPageNumber} /></div>
                         </div>
                     </div>
                 </div>

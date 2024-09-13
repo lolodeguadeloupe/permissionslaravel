@@ -29,8 +29,6 @@ export default function Index({ auth, students, classes }) {
             url.searchParams.append("class_id", classId);
         }
 
-        url.searchParams.append("search", searchTerm);
-
         return url.toString();
     }, [searchTerm,pageNumber,classId]);
 
@@ -50,17 +48,26 @@ export default function Index({ auth, students, classes }) {
    useEffect(() => {
     
         if (inputValue.length == 0) {
+            setSearchTerm("");
             return;
         }
 
         const handler = setTimeout(() => {
-        setSearchTerm(inputValue);
-        setPageNumber("1");
+            setSearchTerm(inputValue);
+            setPageNumber("1");
         }, 500);
 
         return () => clearTimeout(handler);
 
    }, [inputValue]);
+
+   useEffect(() => {
+    if (classId !="" && inputValue.length == 0) {
+        setSearchTerm("");
+        setPageNumber("1");
+    }
+
+}, [classId]);
 
     const updatedPageNumber = (link) => {
        setPageNumber(link.url.split("=")[1]);

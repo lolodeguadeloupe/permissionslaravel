@@ -58,6 +58,7 @@ class RoleController extends Controller
             return $permission['value'];
         });
         $role->permissions()->sync($permissions);
+        
         return redirect()->route('roles.index');
     }
 
@@ -67,6 +68,7 @@ class RoleController extends Controller
 
     public function store(UpdateRoleRequest $request)
     {
+        Gate::authorize('role_create');
         $role = Role::create($request->validated());
         $permissions = collect($request->selectedPermissions)->map(function($permission){
             return $permission['value'];

@@ -23,6 +23,14 @@ class StudentController extends Controller
     {
         Gate::authorize('student_access');
 
+        if ($request->query('search')) {            
+            $students = Student::search($request)->paginate(10);
+        } 
+        
+        if ($request->query('class_id')) {            
+            $students = Student::search($request)->paginate(10);
+        } 
+
         $students = Student::search($request)->paginate(10);
         $classes = ClassResource::collection(Classes::all());
 
@@ -33,6 +41,55 @@ class StudentController extends Controller
             'search' => optional($request->search),
         ]);
     }
+
+    public function index2(Request $request)
+    {
+        
+        $studentquery = Student::query();
+        $classes = ClassResource::collection(Classes::all());
+        
+
+        
+        $class_id = $request->query('class_id');
+        
+
+        $search = $request->query('search');
+        $param = [
+            'search' => $search ?? '',
+            'class_id' => $class_id ?? '',
+        ];
+        
+        if ($search ) {
+            $studentquery = $this->applySearch($studentquery,$param);
+        }
+
+        if ($class_id) {
+            $studentquery = $this->applySearch($studentquery,$param);
+        }
+        
+        $students = StudentResource::collection($studentquery->latest()->paginate(5));
+
+        return Inertia::render('Student/Index', [
+            'students' => $students,
+            'search' => $search ?? '',
+            'classes' => $classes,
+            'class_id' => $class_id ?? '',
+        ]);
+    }
+
+    protected function applySearch($query, $param)
+    {
+        return $query->when($param['search'], function ($query, $search) {
+                    $query->where(function ($query) use ($search) {
+                        $query->where('name', 'like', '%'.$search.'%')
+                            ->orWhere('email', 'like', '%'.$search.'%');
+                    });
+                })
+                ->when($param['class_id'], function ($query, $class_id) {
+                    $query->where('class_id', $class_id);
+                });
+    }
+
 
     /**
      * Show the form for creating a new resource.

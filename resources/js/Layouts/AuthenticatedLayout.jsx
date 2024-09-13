@@ -31,19 +31,33 @@ export default function Authenticated({ user, header, children }) {
                                     Liste des posts
                                 </NavLink>
                             </div>}
+                            {page.props.can.user_access &&<div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink href={route('users.index')} active={route().current('users.index')}>
+                                    Liste des utilisateurs
+                                </NavLink>
+                            </div>}
                             {page.props.can.student_access && <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink href={route('posts2.index')} active={route().current('posts2.index')}>
                                     Liste des posts2
                                 </NavLink>
                             </div>}
                             {page.props.can.student_access && <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink href={route('students.index')} active={route().current('students.index')}>
+                                <NavLink href={route('posts3.index')} active={route().current('posts3.index')}>
+                                    Liste des posts 3
+                                </NavLink>
+                            </div>}
+                            {page.props.can.student_access && <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink href={route('students.index')} active={route().current('students.index') }>
                                     Liste des étudiants
                                 </NavLink>
                             </div>}
                             {page.props.can.role_access &&<div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink href={route('roles.index')} active={route().current('roles.index')}>
-                                    Liste des roles
+                                <NavLink href={route('roles.index')} active={route().current('roles.index')
+                                     || route().current('roles.create') 
+                                     || route().current('roles.edit')
+                                     || route().current('permissions.index')
+                                     }>
+                                    Gestion des roles
                                 </NavLink>
                             </div>}
                         </div>

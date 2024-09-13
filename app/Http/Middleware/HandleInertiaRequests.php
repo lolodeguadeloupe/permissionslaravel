@@ -35,9 +35,15 @@ class HandleInertiaRequests extends Middleware
         $permissions = [];
 
         if ($user) {
-            foreach ($user->roles as $role) {
-                
-                foreach ($role->permissions as $singlePermission) {
+            if($user->roles){
+                foreach ($user->roles as $role) {
+                    foreach ($role->permissions as $singlePermission) {
+                        $permissions[] = $singlePermission->title;
+                    }
+                }
+            }
+            if($user->permissions){
+                foreach($user->permissions as $singlePermission){
                     $permissions[] = $singlePermission->title;
                 }
             }

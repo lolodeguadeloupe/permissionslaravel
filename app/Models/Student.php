@@ -27,22 +27,15 @@ class Student extends Model
     {
         return $query
             ->where(function ($query) use ($request) {
-                return $query
-                    ->when(
-                        $request->class_id && $request->search,
-                        function ($query) use ($request) {
-                            $query->where('class_id', $request->class_id)
-                                ->where('name', 'LIKE', "%" . $request->search . "%")
-                                ->orWhere('email', 'LIKE', "%" . $request->search . "%");
-                        }
-                    )
-                    ->when($request->search, function ($query) use ($request) {
-                        $query->where('name', 'LIKE', "%" . $request->search . "%")
-                            ->orWhere('email', 'LIKE', "%" . $request->search . "%");
-                    })
-                    ->when($request->class_id, function ($query) use ($request) {
-                        $query->where('class_id', $request->class_id);
+                return $query->when($request->search, function ($query, $search) {
+                    $query->where(function ($query) use ($search) {
+                        $query->where('name', 'like', '%'.$search.'%')
+                            ->orWhere('email', 'like', '%'.$search.'%');
                     });
+                })
+                ->when($request->class_id, function ($query, $class_id) {
+                    $query->where('class_id', $class_id);
+                });
             });
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Faker\Provider\ar_EG\Person;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -19,19 +20,25 @@ class AuthGates
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = $request?->user()?->load('roles.permissions');
-
+        $user = $request?->user()?->load('roles.permissions','permissions');
         $permissions = [];
 
         if ($user) {
-            foreach ($user->roles as $role) {
-                Log::info($role->permissions);
-                foreach ($role->permissions as $singlePermission) {
-                    Log::info($singlePermission->title);
+            if($user->roles){
+                foreach ($user->roles as $role) {
+                    foreach ($role->permissions as $singlePermission) {
+                        $permissions[] = $singlePermission->title;
+                    }
+                }
+            }
+            
+            if($user->permissions){
+                foreach($user->permissions as $singlePermission){
                     $permissions[] = $singlePermission->title;
                 }
             }
 
+           
             collect($permissions)->unique()->map(function ($permission) {
                 Gate::define($permission, function () {
                     return true;
